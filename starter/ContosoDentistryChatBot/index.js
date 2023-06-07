@@ -15,7 +15,7 @@ const restify = require('restify');
 const { BotFrameworkAdapter } = require('botbuilder');
 
 // This bot's main dialog.
-const { DentaBot } = require('./bot');
+const { DentalBot } = require('./bot');
 
 // Create HTTP server
 const server = restify.createServer();
@@ -79,14 +79,12 @@ const configuration = {
 }
 
 // Create the main dialog.
-const myBot = new DentaBot(configuration, {});
+const myBot = new DentalBot(QnAConfiguration, {});
 
-// Listen for incoming requests.
-server.post('/api/messages', (req, res) => {
-    adapter.processActivity(req, res, async (context) => {
-        // Route to main dialog.
-        await myBot.run(context);
-    });
+// Listen for incoming activities and route them to your bot main dialog.
+server.post('/api/messages', async (req, res) => {
+    // Route received a request to adapter for processing
+    await adapter.process(req, res, (context) => bot.run(context));
 });
 
 // Listen for Upgrade requests for Streaming.
